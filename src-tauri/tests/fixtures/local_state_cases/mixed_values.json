@@ -1,0 +1,9 @@
+{
+  "variations_country": "fr",
+  "variations_permanent_consistency_country": "cn",
+  "a": {
+    "b": {
+      "is_glic_eligible": false
+    }
+  }
+}

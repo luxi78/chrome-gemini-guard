@@ -1,0 +1,7 @@
+{
+  "variations_country": "cn",
+  "variations_permanent_consistency_country": "cn",
+  "feature_flags": {
+    "is_glic_eligible": false
+  }
+}

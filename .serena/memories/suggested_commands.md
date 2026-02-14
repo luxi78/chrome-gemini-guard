@@ -1,0 +1,11 @@
+# Suggested commands (Windows/PowerShell)
+- Install JS deps: `bun install`
+- Frontend tests: `bun run test`
+- Frontend tests watch: `bun run test:watch`
+- Frontend dev server: `bun run dev`
+- Tauri dev app: `bun run tauri:dev`
+- Frontend build: `bun run build`
+- Tauri build: `bun run tauri:build`
+- Rust tests: `cd src-tauri; cargo test`
+- Rust release build: `cd src-tauri; cargo build --release`
+- Toolchain checks: `bun --version`, `rustc --version`, `cargo --version`
