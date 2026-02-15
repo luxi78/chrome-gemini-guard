@@ -1,29 +1,26 @@
-# TDD Boundary (Step 1 + Step 2 only)
+# TDD Boundary (Step 3 Complete / Step 4+)
 
-This repository is currently in a strict TDD pre-implementation stage.
+This repository has completed the initial TDD implementation stage.
 
-## Allowed in this stage
+## Current Stage: Post-Implementation / Integration
 
-- Project skeleton and module boundaries.
-- Interface and contract definitions.
-- High-density TODO comments for future implementation agents.
-- Test fixtures and RED tests.
-- Mock and stub placeholders.
+- **Implemented**:
+  - Real file resolution and watching.
+  - Real Local State patching (with atomic writes).
+  - Tray and Autostart logic.
+  - Full frontend/backend integration.
 
-## Forbidden in this stage
+## Guardrails for New Features
 
-- Real file watching logic.
-- Real Local State patch and write logic.
-- Real tray side-effect logic.
-- Real network probing logic.
-- Any production behavior that would claim feature completion.
+- **Strict TDD**: Write failing tests before adding new business logic.
+- **Contract Tests**: Maintain API and UI contracts.
+- **No Regressions**: Ensure existing tests (`cargo test`, `bun run test`) remain GREEN.
 
-## Handoff intent
+## Handoff Intent
 
-The next agent (Step 3) should implement behavior by following:
+The next agent (Step 4+) should focus on:
 
-1. TODO annotations in code.
-2. Failing tests and test names.
-3. Contract types and error semantics.
-
-No file in this stage should be interpreted as a completed feature implementation.
+1.  Manual Verification & QA.
+2.  Packaging & CI/CD.
+3.  Polishing UI/UX.
+4.  Adding advanced features (if requested).

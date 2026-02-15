@@ -1,55 +1,39 @@
-# Step 3 Handoff Guide (Implementation Phase)
+# Step 3 Completion & Step 4 Handoff Guide
 
-This file is for the next coding agent that will implement business logic.
+## Status Overview
 
-Current repository status:
+- **Step 1 (Skeleton)**: Done
+- **Step 2 (Tests)**: Done
+- **Step 3 (Implementation)**: **COMPLETE**
+  - All core services (Path Resolver, Policy, Repair, Watcher) are implemented.
+  - Backend tests (`cargo test`): **ALL PASS** (including retry logic, path resolution, drift analysis).
+  - Frontend tests (`bun run test`): **ALL PASS** (API & UI contracts).
+  - UI Wiring: Dashboard and Settings are functional and connected to the backend.
 
-- Step 1 skeleton: done
-- Step 2 tests: done (contains RED tests by design)
-- Step 3 implementation: not started
+## Implemented Features
 
-## Guardrails
+1.  **Path Resolution**:
+    - Correctly resolves Chrome `Local State` paths on Windows, macOS, and Linux.
+2.  **Policy Enforcement**:
+    - `analyze_drift`: Detects incorrect country codes and GLIC eligibility.
+    - `plan_patch`: Generates corrective JSON patches.
+3.  **Repair Service**:
+    - `repair_with_retry`: Atomic write operations with exponential backoff.
+4.  **Guardian Orchestrator**:
+    - `runtime_state`: Manages enabled/disabled state, strict mode, and autostart.
+    - `reconcile_internal_blocking`: Coordinates analysis and repair.
+5.  **Frontend/UI**:
+    - Full dashboard with status indicators, event logs, and settings.
+    - Real-time polling via `setInterval` in `App.tsx`.
 
-- Do not rewrite architecture unless a test requires it.
-- Implement smallest slice needed to move RED tests toward GREEN.
-- Keep existing TODO tags and update them only after implementation lands.
+## Remaining / ongoing tasks (Step 4 Candidates)
 
-## Test to TODO mapping
+- **Manual Verification**: Run the compiled app locally to verify real-world behavior (e.g., file permissions, actual Chrome interaction).
+- **Packaging/Distribution**: Configure CI/CD for building installers.
+- **Deep Testing**: Add more edge cases or integration tests if needed.
+- **UI Polish**: Refine styles or add more user feedback.
 
-- `src-tauri/tests/policy_contract.rs`
-  - `TODO(step3:policy-analyze)` in `src-tauri/src/domain/policy.rs`
-  - `TODO(step3:policy-patch)` in `src-tauri/src/domain/policy.rs`
-- `src-tauri/tests/path_resolver_windows.rs`
-  - `TODO(step3:path-resolution)` in `src-tauri/src/services/path_resolver.rs`
-- `src-tauri/tests/repair_retry_policy.rs`
-  - `TODO(step3:repair-write)` in `src-tauri/src/services/repair_service.rs`
-- `src-tauri/tests/startup_reconcile_flow.rs`
-  - `TODO(step3:command-reconcile-now)` in `src-tauri/src/commands/guardian.rs`
-  - `TODO(step3:watch-start)` in `src-tauri/src/services/watch_service.rs`
-- `src-tauri/tests/tray_state_contract.rs`
-  - `TODO(step3:tray-close-behavior)` in `src-tauri/src/services/tray_service.rs`
-  - `TODO(step3:autostart-toggle)` in `src-tauri/src/services/autostart_service.rs`
-- `src/test/api-contract.test.ts`
-  - `TODO(step3:frontend-fetch-snapshot)` in `src/lib/api.ts`
-  - `TODO(step3:frontend-toggle-guardian)` in `src/lib/api.ts`
-  - `TODO(step3:frontend-reconcile-now)` in `src/lib/api.ts`
-  - `TODO(step3:command-get-snapshot)` in `src-tauri/src/commands/guardian.rs`
-  - `TODO(step3:command-update-config)` in `src-tauri/src/commands/config.rs`
-- `src/test/ui-contract.test.tsx`
-  - `TODO(step3:dashboard-wireup)` in `src/app/dashboard.tsx`
-  - `TODO(step3:command-get-snapshot)` in `src-tauri/src/commands/guardian.rs`
+## Guardrails for Future Work
 
-## Suggested implementation order (cheap model friendly)
-
-1. `path-resolution` -> pass windows path resolver test.
-2. `policy-analyze` + `policy-patch` -> pass policy contract tests.
-3. `repair-write` with deterministic backoff helper -> pass retry test.
-4. `command-reconcile-now` minimal orchestrator -> pass startup flow contract.
-5. frontend api wrappers + dashboard wiring -> pass API/UI contract tests.
-6. tray/autostart behavior alignment -> pass tray state contract.
-
-## Exit criteria for Step 3
-
-- All currently RED tests either pass or are explicitly replaced with stricter passing tests.
-- No placeholder `unimplemented!()` remains in runtime code paths.
-- Startup reconcile path logs events for detect/notify/repair terminal states.
+- Maintain the "Green" test state. Do not regress.
+- Any new features should follow the established TDD pattern: Write a failing test -> Implement -> Refactor.

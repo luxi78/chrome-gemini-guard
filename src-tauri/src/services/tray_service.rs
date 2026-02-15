@@ -1,3 +1,4 @@
+use tauri::image::Image;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::TrayIconBuilder;
 use tauri::{AppHandle, Manager, Runtime};
@@ -46,6 +47,7 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
     .map_err(|e| e.to_string())?;
     let quit_item = MenuItem::with_id(app, TRAY_QUIT, "退出", true, Option::<&str>::None)
         .map_err(|e| e.to_string())?;
+
     let menu = Menu::with_items(
         app,
         &[
@@ -58,7 +60,10 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
     )
     .map_err(|e| e.to_string())?;
 
+    let icon = Image::from_bytes(include_bytes!("../../icons/32x32.png")).map_err(|e| e.to_string())?;
+
     TrayIconBuilder::with_id("main-tray")
+        .icon(icon)
         .menu(&menu)
         .tooltip("Chrome Gemini Guard")
         .on_menu_event(|app, event| {

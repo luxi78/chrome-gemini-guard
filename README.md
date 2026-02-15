@@ -5,8 +5,8 @@
 当前仓库已具备：
 
 - 前后端工程骨架
-- 核心契约测试
-- 最小可通过实现（以测试通过为目标）
+- 完整核心业务逻辑实现（Path Resolution, Policy, Repair, Watcher）
+- 通过所有核心契约测试（Frontend & Backend）
 
 ---
 
@@ -18,13 +18,15 @@
 - `variations_permanent_consistency_country` -> `us`
 - `is_glic_eligible` -> `true`（所有出现位置）
 
-并支持：
+已实现功能：
 
-- 开机自启（设计目标）
-- 托盘常驻（设计目标）
-- 启动时一致性检查与修复（设计目标）
+- 开机自启（Windows/macOS）
+- 托盘常驻与系统集成
+- 启动时自动检查与修复
+- 实时文件监控与自动修复
+- 完整的前端控制面板
 
-> 说明：当前代码以“通过现有测试”为验收基线，后续可继续增强为完整生产行为。
+> 说明：当前代码已通过核心测试，具备完整业务逻辑，正处于集成测试与打磨阶段。
 
 ---
 
@@ -49,7 +51,9 @@ cargo --version
 
 ---
 
-## 3. 安装依赖
+## 3. 安装与运行
+
+### 3.1 安装依赖
 
 在项目根目录执行：
 
@@ -58,7 +62,19 @@ cd D:\dev\chrome-gemini-guard
 bun install
 ```
 
-Rust 依赖会在首次 `cargo test`/`cargo build` 时自动下载。
+Rust 依赖会在首次 `cargo test`/`cargo build` 或启动应用时自动下载。
+
+### 3.2 启动应用
+
+**桌面模式 (推荐)**：启动完整的 Tauri 桌面应用环境，支持所有原生 API。
+```powershell
+bun run tauri:dev
+```
+
+**浏览器模式**：仅启动前端服务，适合快速 UI 调试（无原生 API 支持）。
+```powershell
+bun run dev
+```
 
 ---
 

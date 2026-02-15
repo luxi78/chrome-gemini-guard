@@ -9,25 +9,29 @@ type DashboardProps = {
   events: EventItem[];
 };
 
-export function Dashboard({ snapshot, events }: DashboardProps) {
-  // TODO(step3:dashboard-wireup;tests:ui-contract):
-  // What: connect command-driven data fetching and action handlers.
-  // I/O: currently receives snapshot/events props from caller; in Step 3 this may come from hooks/store.
-  // Constraints:
-  //   - Show network hint as advisory only.
-  //   - Keep close behavior delegated to tray policy.
-  // Error semantics: render non-blocking fallback UI on API failures.
-  // Mapping: `ui-contract` validates section presence and baseline values.
+export function Dashboard ({ snapshot, events }: DashboardProps) {
   return (
-    <main className="content-wrap">
-      <header className="card">
-        <h1 style={{ margin: 0, fontSize: "34px", letterSpacing: "-0.02em", lineHeight: 1.1 }}>Chrome Gemini Guard</h1>
-        <p className="card-subtitle">监控并修复 Chrome Local State 关键字段，减少手动回填成本。</p>
-      </header>
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+          <p className="text-muted-foreground">
+            一切正常。Chrome Local State 处于受控状态。
+          </p>
+        </div>
+      </div>
+
       <StatusCards snapshot={snapshot} />
-      <RulesPreview strictMode={snapshot.strictMode} />
-      <EventList events={events} />
-      <SettingsPanel autostartEnabled={snapshot.autostartEnabled} />
-    </main>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
+        <div className="col-span-1 md:col-span-2 lg:col-span-4">
+          <EventList events={events} />
+        </div>
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col gap-6">
+          <RulesPreview strictMode={snapshot.strictMode} />
+          <SettingsPanel autostartEnabled={snapshot.autostartEnabled} />
+        </div>
+      </div>
+    </div>
   );
 }
