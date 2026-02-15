@@ -4,6 +4,7 @@ use std::sync::{Mutex, OnceLock};
 
 use crate::domain::policy::{analyze_drift, plan_patch, PolicyOptions};
 use crate::services::audit_log_service::{append_event, now_timestamp, AuditEvent, LogLevel};
+use crate::services::network_hint_service::get_network_country;
 use crate::services::path_resolver::resolve_local_state_path;
 use crate::services::repair_service::{repair_with_retry, RetryPolicy};
 
@@ -86,7 +87,7 @@ pub fn get_snapshot() -> GuardianSnapshot {
         status: status_from_state(enabled, last_error.as_deref()),
         strict_mode,
         autostart_enabled,
-        network_hint: Some("Unknown".to_string()),
+        network_hint: get_network_country(),
     }
 }
 

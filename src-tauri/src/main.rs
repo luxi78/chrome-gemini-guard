@@ -2,6 +2,7 @@ use chrome_gemini_guard::commands::guardian::{
     initialize_runtime_state, reconcile_local_state_change,
 };
 use chrome_gemini_guard::services::autostart_service::is_autostart_enabled;
+use chrome_gemini_guard::services::network_hint_service::spawn_network_watcher;
 use chrome_gemini_guard::services::path_resolver::resolve_local_state_path;
 use chrome_gemini_guard::services::tray_service::create_tray;
 use chrome_gemini_guard::services::watch_service::WatchService;
@@ -19,6 +20,9 @@ fn main() {
             initialize_runtime_state(autostart_enabled);
 
             create_tray(&app.handle())?;
+
+            // Start network country detection (ip-api.com + NotifyAddrChange)
+            spawn_network_watcher();
 
             if let Ok(path) = resolve_local_state_path() {
                 let watcher = WatchService::new();

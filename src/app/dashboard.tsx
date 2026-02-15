@@ -1,6 +1,4 @@
 import { EventList } from "../components/event-list";
-import { RulesPreview } from "../components/rules-preview";
-import { SettingsPanel } from "../components/settings-panel";
 import { StatusCards } from "../components/status-cards";
 import type { EventItem, GuardianSnapshot } from "../lib/types";
 
@@ -11,7 +9,7 @@ type DashboardProps = {
 
 export function Dashboard ({ snapshot, events }: DashboardProps) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 h-full min-h-0">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
@@ -23,15 +21,7 @@ export function Dashboard ({ snapshot, events }: DashboardProps) {
 
       <StatusCards snapshot={snapshot} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
-        <div className="col-span-1 md:col-span-2 lg:col-span-4">
-          <EventList events={events} />
-        </div>
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col gap-6">
-          <RulesPreview strictMode={snapshot.strictMode} />
-          <SettingsPanel autostartEnabled={snapshot.autostartEnabled} />
-        </div>
-      </div>
+      <EventList events={events} />
     </div>
   );
 }

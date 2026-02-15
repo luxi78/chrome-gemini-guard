@@ -18,7 +18,7 @@ function toLocalTimeLabel (raw: string): string {
 
 export function EventList ({ events }: EventListProps) {
   return (
-    <Card className="col-span-1 md:col-span-2 h-[400px] flex flex-col">
+    <Card className="flex-1 min-h-0 flex flex-col">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -31,7 +31,7 @@ export function EventList ({ events }: EventListProps) {
         </div>
       </CardHeader>
       <CardContent className="flex-1 p-0">
-        <ScrollArea className="h-[300px] px-6 pb-4">
+        <ScrollArea className="h-full px-6 pb-4">
           <div className="space-y-4">
             {events.length === 0 ? (
               <div className="text-center text-sm text-muted-foreground py-8">

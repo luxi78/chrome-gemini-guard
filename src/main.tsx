@@ -59,7 +59,7 @@ function App () {
   };
 
   return (
-    <Layout currentPath={page} onNavigate={setPage}>
+    <Layout currentPath={page} onNavigate={setPage} strictMode={snapshot.strictMode}>
       {page === "dashboard" && (
         <Dashboard snapshot={snapshot} events={events} />
       )}
