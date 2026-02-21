@@ -1,0 +1,57 @@
+name: "Release"
+
+on:
+  push:
+    # 只要推送到包含 v 的标签（例如 git tag v1.0.0 && git push origin v1.0.0），就会自动触发打包发布
+    tags:
+      - 'v*'
+  # 允许在 GitHub Actions 网页端手动点击按钮触发
+  workflow_dispatch:
+
+jobs:
+  publish-tauri:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "windows-latest"
+            args: ""
+          - platform: "macos-latest" # 适用于 Apple Silicon (M1/M2/M3 等)
+            args: "--target aarch64-apple-darwin"
+          - platform: "macos-13" # 适用于老款 Intel Mac
+            args: "--target x86_64-apple-darwin"
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin' || matrix.platform == 'macos-13' && 'x86_64-apple-darwin' || 'x86_64-pc-windows-msvc' }}
+
+      - name: Install frontend dependencies
+        run: bun install
+
+      - name: Build and Publish Release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # action 会自动读取 tauri.conf.json 里的 version 并替换 __VERSION__
+          tagName: v__VERSION__
+          releaseName: "Chrome Gemini Guard v__VERSION__"
+          releaseBody: "请在下方 Assets 中下载对应系统版本的程序。Windows 用户可以直接下载 `.exe` 单文件绿色版直接运行。"
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}
+          # 这个属性非常关键！它会将构建出的“纯绿色单文件 .exe”以及 Mac 的 .app 文件也一起上传到 Release 列表中
+          includeRelease: true
