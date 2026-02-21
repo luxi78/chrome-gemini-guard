@@ -12,9 +12,10 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "Chrome Gemini Guard",
-        "width": 980,
-        "height": 720,
+        "width": 540,
+        "height": 436,
         "resizable": true
       }
     ]

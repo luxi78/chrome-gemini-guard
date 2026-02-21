@@ -123,18 +123,54 @@ cargo test
 
 ---
 
-## 6. 如何构建（Build）
+## 6. 如何编译打包（Build）
 
-### 6.1 构建 Rust 部分
+### 6.1 标准打包
+
+在项目根目录执行以下命令，将自动完成前端构建和 Rust 编译：
 
 ```powershell
-cd D:\dev\chrome-gemini-guard\src-tauri
-cargo build --release
+bun run tauri:build
 ```
 
-### 6.2 构建前端静态资源（若后续接入 bundler）
+编译产物位于：
+- **安装包**：`src-tauri/target/release/bundle/msi/` (.msi) 或 `nsis/` (.exe setup)
+- **单文件二进制**：`src-tauri/target/release/chrome-gemini-guard.exe`
 
-当前仓库主要用于契约测试与 Tauri 侧开发；如需完整桌面打包，建议补充标准 Tauri 前端构建脚本后执行统一打包命令。
+### 6.2 制作“绿色版”单文件 EXE
+
+如果你希望生成一个无需安装、拷贝即用的独立 `.exe` 文件，请注意以下两点：
+
+#### A. 运行时依赖说明
+Tauri 生成的 exe 依赖系统内置的 **WebView2** 运行时：
+- **Windows 11**：原生内置，直接运行。
+- **Windows 10**：新版本通常内置，旧版本可能需要用户安装 WebView2 Runtime。
+
+#### B. 静态链接 CRT（消除 vcruntime140.dll 依赖）
+默认情况下，Rust 程序可能依赖系统中的 `vcruntime140.dll`。为了实现真正的“零依赖”绿色化，本项目已配置静态链接 C 运行时。
+
+配置文件位置：`src-tauri/.cargo/config.toml`
+内容如下：
+```toml
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]
+```
+
+#### C. 全量重新编译（清理缓存）
+如果你修改了上述配置或想要确保非追加式的全新编译，请先清理缓存：
+
+```powershell
+# 进入 Rust 目录清理
+cd src-tauri
+cargo clean
+cd ..
+
+# 清理前端产物
+Remove-Item -Recurse -Force dist
+
+# 重新构建
+bun run tauri:build
+```
 
 ---
 

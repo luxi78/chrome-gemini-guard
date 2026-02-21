@@ -7,6 +7,7 @@ pub struct EventDto {
     pub at: String,
     pub level: String,
     pub message: String,
+    pub detail: Option<String>,
 }
 
 #[tauri::command]
@@ -25,6 +26,7 @@ pub fn get_recent_events_cmd(limit: Option<usize>) -> Vec<EventDto> {
             }
             .to_string(),
             message: event.message,
+            detail: event.detail,
         })
         .collect()
 }

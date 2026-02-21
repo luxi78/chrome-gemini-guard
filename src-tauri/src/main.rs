@@ -1,3 +1,5 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 use chrome_gemini_guard::commands::guardian::{
     initialize_runtime_state, reconcile_local_state_change,
 };
@@ -6,20 +8,33 @@ use chrome_gemini_guard::services::network_hint_service::spawn_network_watcher;
 use chrome_gemini_guard::services::path_resolver::resolve_local_state_path;
 use chrome_gemini_guard::services::tray_service::create_tray;
 use chrome_gemini_guard::services::watch_service::WatchService;
-use tauri::WindowEvent;
+use tauri::{Manager, WindowEvent};
 use tauri_plugin_autostart::MacosLauncher;
 
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
-            Option::<Vec<&'static str>>::None,
+            Some(vec!["--hidden"]),
         ))
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            let _ = app
+                .get_webview_window("main")
+                .expect("no main window")
+                .set_focus();
+        }))
         .setup(|app| {
             let autostart_enabled = is_autostart_enabled(&app.handle()).unwrap_or(false);
             initialize_runtime_state(autostart_enabled);
 
             create_tray(&app.handle())?;
+
+            let launched_hidden = std::env::args().any(|a| a == "--hidden");
+            if launched_hidden {
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = window.hide();
+                }
+            }
 
             // Start network country detection (ip-api.com + NotifyAddrChange)
             spawn_network_watcher();

@@ -48,9 +48,11 @@ export function EventList ({ events }: EventListProps) {
                       {toLocalTimeLabel(item.at)}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground line-clamp-1">
-                    Operation details logged by system.
-                  </p>
+                  {item.detail && (
+                    <p className="text-xs text-muted-foreground whitespace-pre-line">
+                      {item.detail}
+                    </p>
+                  )}
                 </div>
               ))
             )}

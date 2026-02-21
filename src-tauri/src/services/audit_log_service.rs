@@ -14,6 +14,7 @@ pub struct AuditEvent {
     pub at: String,
     pub level: LogLevel,
     pub message: String,
+    pub detail: Option<String>,
 }
 
 fn event_buffer() -> &'static Mutex<VecDeque<AuditEvent>> {

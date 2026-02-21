@@ -1,6 +1,6 @@
 use tauri::image::Image;
 use tauri::menu::{Menu, MenuItem};
-use tauri::tray::TrayIconBuilder;
+use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
 use tauri::{AppHandle, Manager, Runtime};
 
 use crate::commands::guardian::{
@@ -65,7 +65,27 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
     TrayIconBuilder::with_id("main-tray")
         .icon(icon)
         .menu(&menu)
+        .menu_on_left_click(false)
         .tooltip("Chrome Gemini Guard")
+        .on_tray_icon_event(|tray, event| {
+            if let TrayIconEvent::Click {
+                button: MouseButton::Left,
+                button_state: MouseButtonState::Up,
+                ..
+            } = event
+            {
+                let app = tray.app_handle();
+                if let Some(window) = app.get_webview_window("main") {
+                    if window.is_visible().unwrap_or(false) {
+                        let _ = window.hide();
+                    } else {
+                        let _ = window.show();
+                        let _ = window.unminimize();
+                        let _ = window.set_focus();
+                    }
+                }
+            }
+        })
         .on_menu_event(|app, event| {
             let id = event.id().as_ref();
             match id {

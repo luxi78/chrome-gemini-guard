@@ -85,18 +85,7 @@ export function Layout ({ children, currentPath, onNavigate, strictMode }: Layou
 						</div>
 					</div>
 
-					<Separator className="my-4" />
-
-					<div className="px-2 py-2">
-						<h4 className="mb-2 text-xs font-semibold text-muted-foreground tracking-wider uppercase">
-							System
-						</h4>
-						<div className="flex items-center gap-2 text-sm text-muted-foreground">
-							<div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-							Service Running
-						</div>
-					</div>
-				</ScrollArea>
+			</ScrollArea>
 
 				<div className="p-4 border-t text-xs text-muted-foreground text-center">
 					v0.1.0-alpha

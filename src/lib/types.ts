@@ -18,4 +18,5 @@ export interface EventItem {
   at: string;
   level: "info" | "warn" | "error";
   message: string;
+  detail?: string;
 }

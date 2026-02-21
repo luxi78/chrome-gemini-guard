@@ -37,6 +37,7 @@ pub fn update_config_cmd(
             "设置已更新：严格模式={}，开机自启动={}",
             request.strict_mode, request.autostart_enabled
         ),
+        detail: None,
     });
     Ok(UpdateConfigResponse { accepted: true })
 }
@@ -58,6 +59,7 @@ pub fn set_autostart_cmd(app: AppHandle, enabled: bool) -> Result<serde_json::Va
         at: now_timestamp(),
         level: LogLevel::Info,
         message: format!("开机自启动已{}", if enabled { "开启" } else { "关闭" }),
+        detail: None,
     });
     Ok(serde_json::json!({
         "autostartEnabled": enabled

@@ -106,6 +106,7 @@ pub fn toggle_guardian(request: ToggleGuardianRequest) {
         } else {
             "守护已停止".to_string()
         },
+        detail: None,
     });
 }
 
@@ -159,11 +160,20 @@ fn reconcile_internal_blocking() -> Result<(), String> {
             at: now_timestamp(),
             level: LogLevel::Info,
             message: format!("检测到 {} 项偏差并已修复", report.items.len()),
+            detail: Some(
+                report
+                    .items
+                    .iter()
+                    .map(|i| format!("{}: {:?} → \"{}\"", i.json_path, i.actual, i.expected))
+                    .collect::<Vec<_>>()
+                    .join("\n"),
+            ),
         }),
         Err(err) => append_event(AuditEvent {
             at: now_timestamp(),
             level: LogLevel::Error,
             message: format!("修复失败: {err}"),
+            detail: None,
         }),
     }
 
@@ -190,6 +200,7 @@ pub fn set_strict_mode_cmd(strict_mode: bool) -> Result<GuardianSnapshot, String
         at: now_timestamp(),
         level: LogLevel::Info,
         message: format!("严格模式已{}", if strict_mode { "开启" } else { "关闭" }),
+        detail: None,
     });
     Ok(get_snapshot())
 }

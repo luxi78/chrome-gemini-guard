@@ -16,6 +16,7 @@ type BackendEvent = {
   at: string;
   level: string;
   message: string;
+  detail: string | null;
 };
 
 export async function fetchSnapshot(): Promise<GuardianSnapshot> {
@@ -84,7 +85,8 @@ export async function fetchRecentEvents(limit = 100): Promise<EventItem[]> {
     return res.map((item) => ({
       at: item.at,
       level: item.level === "warn" ? "warn" : item.level === "error" ? "error" : "info",
-      message: item.message
+      message: item.message,
+      detail: item.detail ?? undefined
     }));
   } catch {
     return [];
