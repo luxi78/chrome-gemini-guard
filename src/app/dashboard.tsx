@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { EventList } from "../components/event-list";
 import { StatusCards } from "../components/status-cards";
 import type { EventItem, GuardianSnapshot } from "../lib/types";
@@ -8,13 +9,15 @@ type DashboardProps = {
 };
 
 export function Dashboard ({ snapshot, events }: DashboardProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-6 h-full min-h-0">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <p className="text-muted-foreground">
-            一切正常。Chrome Local State 处于受控状态。
+            {t("dashboard.subtitle")}
           </p>
         </div>
       </div>

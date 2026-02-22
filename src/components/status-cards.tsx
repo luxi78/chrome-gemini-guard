@@ -1,42 +1,33 @@
 import { Radio, ShieldCheck, ShieldAlert, Shield } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 import type { GuardianSnapshot } from "../lib/types";
 
 type StatusCardsProps = {
   snapshot: GuardianSnapshot;
 };
 
-const COUNTRY_NAMES: Record<string, string> = {
-  US: "美国",
-  CN: "中国",
-  JP: "日本",
-  KR: "韩国",
-  GB: "英国",
-  DE: "德国",
-  SG: "新加坡",
-  HK: "中国香港",
-  TW: "中国台湾",
-};
-
-function getCountryDisplay (code: string | null): { label: string; color: string } {
-  if (!code) return { label: "检测中…", color: "text-muted-foreground" };
-  const name = COUNTRY_NAMES[code] ?? code;
+function useCountryDisplay (code: string | null): { label: string; color: string } {
+  const { t } = useTranslation();
+  if (!code) return { label: t("statusCards.detecting"), color: "text-muted-foreground" };
+  const name = t(`countries.${code}`, { defaultValue: code });
   if (code === "US") return { label: name, color: "text-green-500" };
   if (code === "CN") return { label: name, color: "text-red-500" };
   return { label: name, color: "text-yellow-500" };
 }
 
 export function StatusCards ({ snapshot }: StatusCardsProps) {
+  const { t } = useTranslation();
   const isRunning = snapshot.status === "running";
   const isError = snapshot.status === "error";
-  const country = getCountryDisplay(snapshot.networkHint);
+  const country = useCountryDisplay(snapshot.networkHint);
 
   return (
     <div className="grid grid-cols-2 gap-4">
       <Card className="min-w-0">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium truncate">守护进程状态</CardTitle>
+          <CardTitle className="text-sm font-medium truncate">{t("statusCards.guardianStatus")}</CardTitle>
           {isRunning ? (
             <ShieldCheck className="h-4 w-4 shrink-0 text-green-500" />
           ) : isError ? (
@@ -56,14 +47,14 @@ export function StatusCards ({ snapshot }: StatusCardsProps) {
             </Badge>
           </div>
           <p className="text-xs text-muted-foreground truncate">
-            {isRunning ? "正在持续监控 Local State" : "服务未运行"}
+            {isRunning ? t("statusCards.monitoring") : t("statusCards.notRunning")}
           </p>
         </CardContent>
       </Card>
 
       <Card className="min-w-0">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium truncate">网络环境</CardTitle>
+          <CardTitle className="text-sm font-medium truncate">{t("statusCards.network")}</CardTitle>
           <Radio className={`h-4 w-4 shrink-0 ${country.color}`} />
         </CardHeader>
         <CardContent>
@@ -71,7 +62,7 @@ export function StatusCards ({ snapshot }: StatusCardsProps) {
             {country.label}
           </div>
           <p className="text-xs text-muted-foreground truncate">
-            当前互联网出口国家
+            {t("statusCards.networkDesc")}
           </p>
         </CardContent>
       </Card>

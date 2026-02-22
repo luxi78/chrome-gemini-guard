@@ -5,6 +5,7 @@ import { LogsPage } from "./app/logs";
 import { SettingsPage } from "./app/settings";
 import { Layout, type NavPath } from "./layout";
 import "./app/globals.css";
+import "./i18n";
 import {
   fetchAutostartStatus,
   fetchRecentEvents,

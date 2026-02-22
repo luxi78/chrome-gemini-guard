@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import type { EventItem } from "../lib/types";
 import { Search } from "lucide-react";
 
@@ -12,6 +12,7 @@ type LogsPageProps = {
 };
 
 export function LogsPage ({ events }: LogsPageProps) {
+	const { t, i18n } = useTranslation();
 	const [search, setSearch] = useState("");
 	const [filterLevel, setFilterLevel] = useState<"all" | EventItem["level"]>("all");
 
@@ -24,14 +25,15 @@ export function LogsPage ({ events }: LogsPageProps) {
 	const formatTime = (iso: string) => {
 		const numeric = Number(iso);
 		const dt = Number.isFinite(numeric) ? new Date(numeric) : new Date(iso);
-		return Number.isNaN(dt.getTime()) ? iso : dt.toLocaleString("zh-CN", { hour12: false });
+		const locale = i18n.language.startsWith("zh") ? "zh-CN" : "en-US";
+		return Number.isNaN(dt.getTime()) ? iso : dt.toLocaleString(locale, { hour12: false });
 	};
 
 	return (
 		<div className="flex flex-col gap-6">
 			<div>
 				<h2 className="text-3xl font-bold tracking-tight">System Logs</h2>
-				<p className="text-muted-foreground">查看详细的系统运行日志与事件。</p>
+				<p className="text-muted-foreground">{t("logs.subtitle")}</p>
 			</div>
 
 			<Card>
@@ -40,7 +42,7 @@ export function LogsPage ({ events }: LogsPageProps) {
 						<div className="relative w-full max-w-sm">
 							<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
 							<Input
-								placeholder="搜索日志..."
+								placeholder={t("logs.searchPlaceholder")}
 								value={search}
 								onChange={(e) => setSearch(e.target.value)}
 								className="pl-8"
@@ -65,9 +67,9 @@ export function LogsPage ({ events }: LogsPageProps) {
 						<Table>
 							<TableHeader>
 								<TableRow>
-									<TableHead className="w-[180px]">Timestamp</TableHead>
-									<TableHead className="w-[100px]">Level</TableHead>
-									<TableHead>Message</TableHead>
+									<TableHead className="w-[180px]">{t("logs.timestamp")}</TableHead>
+									<TableHead className="w-[100px]">{t("logs.level")}</TableHead>
+									<TableHead>{t("logs.message")}</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
@@ -90,7 +92,7 @@ export function LogsPage ({ events }: LogsPageProps) {
 								)) : (
 									<TableRow>
 										<TableCell colSpan={3} className="h-24 text-center">
-											暂无日志数据
+											{t("logs.empty")}
 										</TableCell>
 									</TableRow>
 								)}

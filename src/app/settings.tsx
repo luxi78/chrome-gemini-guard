@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -22,35 +23,37 @@ export function SettingsPage ({
 	onToggleGuardian,
 	onReconcile
 }: SettingsPageProps) {
+	const { t, i18n } = useTranslation();
+	const currentLang = i18n.language.startsWith("zh") ? "zh" : "en";
 
 	return (
 		<div className="flex flex-col gap-6">
 			<div>
 				<h2 className="text-3xl font-bold tracking-tight">Settings</h2>
-				<p className="text-muted-foreground">配置守护进程的行为策略。</p>
+				<p className="text-muted-foreground">{t("settings.subtitle")}</p>
 			</div>
 
 			{snapshot.status === "error" && (
 				<Alert variant="destructive">
 					<ShieldAlert className="h-4 w-4" />
-					<AlertTitle>需要管理员权限</AlertTitle>
+					<AlertTitle>{t("settings.adminRequired")}</AlertTitle>
 					<AlertDescription>
-						检测到服务异常，可能需要以管理员身份运行此程序才能进行修复。
+						{t("settings.adminRequiredDesc")}
 					</AlertDescription>
 				</Alert>
 			)}
 
 			<Card>
 				<CardHeader>
-					<CardTitle>常规设置</CardTitle>
-					<CardDescription>控制应用程序的基本功能</CardDescription>
+					<CardTitle>{t("settings.general")}</CardTitle>
+					<CardDescription>{t("settings.generalDesc")}</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-6">
 					<div className="flex items-center justify-between space-x-2">
 						<div className="space-y-0.5">
-							<Label className="text-base">开机自启动</Label>
+							<Label className="text-base">{t("settings.autostart")}</Label>
 							<p className="text-sm text-muted-foreground">
-								登录系统时自动启动 Chrome Gemini Guard
+								{t("settings.autostartDesc")}
 							</p>
 						</div>
 						<Switch checked={snapshot.autostartEnabled} onCheckedChange={onToggleAutostart} />
@@ -58,40 +61,67 @@ export function SettingsPage ({
 					<Separator />
 					<div className="flex items-center justify-between space-x-2">
 						<div className="space-y-0.5">
-							<Label className="text-base">严格模式</Label>
+							<Label className="text-base">{t("settings.strictMode")}</Label>
 							<p className="text-sm text-muted-foreground">
-								强制覆盖任何不符合预期的 Local State 修改
+								{t("settings.strictModeDesc")}
 							</p>
 						</div>
 						<Switch checked={snapshot.strictMode} onCheckedChange={onToggleStrictMode} />
+					</div>
+					<Separator />
+					<div className="flex items-center justify-between space-x-2">
+						<div className="space-y-0.5">
+							<Label className="text-base">{t("settings.language")}</Label>
+							<p className="text-sm text-muted-foreground">
+								{t("settings.languageDesc")}
+							</p>
+						</div>
+						<div className="flex gap-1 rounded-md border p-1">
+							<Button
+								variant={currentLang === "zh" ? "secondary" : "ghost"}
+								size="sm"
+								className="h-7 px-3 text-xs"
+								onClick={() => i18n.changeLanguage("zh")}
+							>
+								中文
+							</Button>
+							<Button
+								variant={currentLang === "en" ? "secondary" : "ghost"}
+								size="sm"
+								className="h-7 px-3 text-xs"
+								onClick={() => i18n.changeLanguage("en")}
+							>
+								English
+							</Button>
+						</div>
 					</div>
 				</CardContent>
 			</Card>
 
 			<Card className="border-destructive/50">
 				<CardHeader>
-					<CardTitle className="text-destructive">危险区域</CardTitle>
-					<CardDescription>执行可能影响 Chrome 运行的高级操作</CardDescription>
+					<CardTitle className="text-destructive">{t("settings.dangerZone")}</CardTitle>
+					<CardDescription>{t("settings.dangerZoneDesc")}</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4">
 					<div className="flex items-center justify-between">
 						<div>
-							<div className="font-medium">手动修复</div>
-							<div className="text-sm text-muted-foreground">立即执行一次 Local State 根据规则的强制同步</div>
+							<div className="font-medium">{t("settings.manualFix")}</div>
+							<div className="text-sm text-muted-foreground">{t("settings.manualFixDesc")}</div>
 						</div>
-						<Button variant="secondary" onClick={onReconcile}>立即修复</Button>
+						<Button variant="secondary" onClick={onReconcile}>{t("settings.fixNow")}</Button>
 					</div>
 					<Separator />
 					<div className="flex items-center justify-between">
 						<div>
-							<div className="font-medium">守护进程开关</div>
-							<div className="text-sm text-muted-foreground">完全停止或启动后台监控服务</div>
+							<div className="font-medium">{t("settings.guardianToggle")}</div>
+							<div className="text-sm text-muted-foreground">{t("settings.guardianToggleDesc")}</div>
 						</div>
 						<Button
 							variant={snapshot.status === "running" ? "destructive" : "default"}
 							onClick={onToggleGuardian}
 						>
-							{snapshot.status === "running" ? "停止服务" : "启动服务"}
+							{snapshot.status === "running" ? t("settings.stopService") : t("settings.startService")}
 						</Button>
 					</div>
 				</CardContent>

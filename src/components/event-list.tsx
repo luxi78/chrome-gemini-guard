@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -7,23 +8,24 @@ type EventListProps = {
   events: EventItem[];
 };
 
-function toLocalTimeLabel (raw: string): string {
-  const numeric = Number(raw);
-  const date = Number.isFinite(numeric) ? new Date(numeric) : new Date(raw);
-  if (Number.isNaN(date.getTime())) {
-    return raw;
-  }
-  return date.toLocaleString("zh-CN", { hour12: false });
-}
-
 export function EventList ({ events }: EventListProps) {
+  const { t, i18n } = useTranslation();
+
+  const toLocalTimeLabel = (raw: string): string => {
+    const numeric = Number(raw);
+    const date = Number.isFinite(numeric) ? new Date(numeric) : new Date(raw);
+    if (Number.isNaN(date.getTime())) return raw;
+    const locale = i18n.language.startsWith("zh") ? "zh-CN" : "en-US";
+    return date.toLocaleString(locale, { hour12: false });
+  };
+
   return (
     <Card className="flex-1 min-h-0 flex flex-col">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>最近事件</CardTitle>
-            <CardDescription>系统监控日志与操作记录</CardDescription>
+            <CardTitle>{t("eventList.title")}</CardTitle>
+            <CardDescription>{t("eventList.description")}</CardDescription>
           </div>
           <Badge variant="outline" className="text-xs font-normal">
             Live
@@ -35,7 +37,7 @@ export function EventList ({ events }: EventListProps) {
           <div className="space-y-4">
             {events.length === 0 ? (
               <div className="text-center text-sm text-muted-foreground py-8">
-                暂无事件记录
+                {t("eventList.empty")}
               </div>
             ) : (
               events.map((item, i) => (

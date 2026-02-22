@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 export type NavPath = "dashboard" | "logs" | "settings";
 
@@ -14,6 +15,8 @@ interface LayoutProps {
 }
 
 export function Layout ({ children, currentPath, onNavigate, strictMode }: LayoutProps) {
+	const { t } = useTranslation();
+
 	return (
 		<div className="flex h-screen bg-background">
 			{/* Sidebar */}
@@ -38,7 +41,7 @@ export function Layout ({ children, currentPath, onNavigate, strictMode }: Layou
 							onClick={() => onNavigate("dashboard")}
 						>
 							<LayoutDashboard className="mr-2 h-4 w-4" />
-							仪表盘
+							{t("nav.dashboard")}
 						</Button>
 						<Button
 							variant={currentPath === "settings" ? "secondary" : "ghost"}
@@ -46,7 +49,7 @@ export function Layout ({ children, currentPath, onNavigate, strictMode }: Layou
 							onClick={() => onNavigate("settings")}
 						>
 							<Settings className="mr-2 h-4 w-4" />
-							设置
+							{t("nav.settings")}
 						</Button>
 						<Button
 							variant={currentPath === "logs" ? "secondary" : "ghost"}
@@ -54,16 +57,15 @@ export function Layout ({ children, currentPath, onNavigate, strictMode }: Layou
 							onClick={() => onNavigate("logs")}
 						>
 							<FileText className="mr-2 h-4 w-4" />
-							日志
+							{t("nav.logs")}
 						</Button>
 					</div>
 
 					<Separator className="my-4" />
 
-					{/* 生效规则 */}
 					<div className="px-2 py-2">
 						<h4 className="mb-3 text-xs font-semibold text-muted-foreground tracking-wider uppercase">
-							生效规则
+							{t("sidebar.activeRules")}
 						</h4>
 						<div className="space-y-2 text-sm">
 							<div className="flex items-center justify-between">
