@@ -102,9 +102,9 @@ pub fn toggle_guardian(request: ToggleGuardianRequest) {
         at: now_timestamp(),
         level: LogLevel::Info,
         message: if request.enabled {
-            "守护已启动".to_string()
+            "Guardian started".to_string()
         } else {
-            "守护已停止".to_string()
+            "Guardian stopped".to_string()
         },
         detail: None,
     });
@@ -159,7 +159,7 @@ fn reconcile_internal_blocking() -> Result<(), String> {
         Ok(_) => append_event(AuditEvent {
             at: now_timestamp(),
             level: LogLevel::Info,
-            message: format!("检测到 {} 项偏差并已修复", report.items.len()),
+            message: format!("Detected {} deviation(s) and fixed", report.items.len()),
             detail: Some(
                 report
                     .items
@@ -172,7 +172,7 @@ fn reconcile_internal_blocking() -> Result<(), String> {
         Err(err) => append_event(AuditEvent {
             at: now_timestamp(),
             level: LogLevel::Error,
-            message: format!("修复失败: {err}"),
+            message: format!("Fix failed: {err}"),
             detail: None,
         }),
     }
@@ -199,7 +199,7 @@ pub fn set_strict_mode_cmd(strict_mode: bool) -> Result<GuardianSnapshot, String
     append_event(AuditEvent {
         at: now_timestamp(),
         level: LogLevel::Info,
-        message: format!("严格模式已{}", if strict_mode { "开启" } else { "关闭" }),
+        message: format!("Strict mode {}", if strict_mode { "enabled" } else { "disabled" }),
         detail: None,
     });
     Ok(get_snapshot())

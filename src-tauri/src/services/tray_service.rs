@@ -65,7 +65,7 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
     TrayIconBuilder::with_id("main-tray")
         .icon(icon)
         .menu(&menu)
-        .menu_on_left_click(false)
+        .show_menu_on_left_click(false)
         .tooltip("Chrome Gemini Guard")
         .on_tray_icon_event(|tray, event| {
             if let TrayIconEvent::Click {

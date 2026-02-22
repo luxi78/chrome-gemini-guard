@@ -46,12 +46,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # action 会自动读取 tauri.conf.json 里的 version 并替换 __VERSION__
           tagName: v__VERSION__
           releaseName: "Chrome Gemini Guard v__VERSION__"
           releaseBody: "请在下方 Assets 中下载对应系统版本的程序。Windows 用户可以直接下载 `.exe` 单文件绿色版直接运行。"
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
-          # 这个属性非常关键！它会将构建出的“纯绿色单文件 .exe”以及 Mac 的 .app 文件也一起上传到 Release 列表中
           includeRelease: true
+
+      - name: Replace installers with portable exe (Windows only)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          $version = (Get-Content src-tauri/tauri.conf.json | ConvertFrom-Json).version
+          $tag = "v$version"
+
+          # 找到所有 setup.exe / .msi 的 asset id，通过 API 删除它们
+          $assets = gh api repos/$env:REPO/releases/tags/$tag --jq '.assets[] | select(.name | test("setup\\.exe$|\\.msi$")) | .id'
+          foreach ($id in ($assets -split "`n" | Where-Object { $_ -ne "" })) {
+            gh api -X DELETE repos/$env:REPO/releases/assets/$id
+            Write-Host "Deleted asset id: $id"
+          }
+
+          # 上传绿色单文件 exe
+          $dest = "chrome-gemini-guard_${version}_x64.exe"
+          Copy-Item src-tauri/target/release/chrome-gemini-guard.exe $dest
+          gh release upload $tag $dest --clobber
+          Write-Host "Uploaded portable exe: $dest"

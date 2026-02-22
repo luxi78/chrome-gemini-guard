@@ -90,7 +90,7 @@ export function Layout ({ children, currentPath, onNavigate, strictMode }: Layou
 			</ScrollArea>
 
 				<div className="p-4 border-t text-xs text-muted-foreground text-center">
-					v1.0.0
+					{__APP_VERSION__}
 				</div>
 			</div>
 

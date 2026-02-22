@@ -34,7 +34,7 @@ pub fn update_config_cmd(
         at: now_timestamp(),
         level: LogLevel::Info,
         message: format!(
-            "设置已更新：严格模式={}，开机自启动={}",
+            "Settings updated: strict_mode={}, autostart={}",
             request.strict_mode, request.autostart_enabled
         ),
         detail: None,
@@ -58,7 +58,7 @@ pub fn set_autostart_cmd(app: AppHandle, enabled: bool) -> Result<serde_json::Va
     append_event(AuditEvent {
         at: now_timestamp(),
         level: LogLevel::Info,
-        message: format!("开机自启动已{}", if enabled { "开启" } else { "关闭" }),
+        message: format!("Autostart {}", if enabled { "enabled" } else { "disabled" }),
         detail: None,
     });
     Ok(serde_json::json!({
