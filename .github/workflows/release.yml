@@ -18,10 +18,13 @@ jobs:
         include:
           - platform: "windows-latest"
             args: ""
-          - platform: "macos-latest" # 适用于 Apple Silicon (M1/M2/M3 等)
+            rust_target: "x86_64-pc-windows-msvc"
+          - platform: "macos-latest"
             args: "--target aarch64-apple-darwin"
-          - platform: "macos-13" # 适用于老款 Intel Mac
+            rust_target: "aarch64-apple-darwin"
+          - platform: "macos-latest"
             args: "--target x86_64-apple-darwin"
+            rust_target: "x86_64-apple-darwin"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -36,7 +39,7 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin' || matrix.platform == 'macos-13' && 'x86_64-apple-darwin' || 'x86_64-pc-windows-msvc' }}
+          targets: ${{ matrix.rust_target }}
 
       - name: Install frontend dependencies
         run: bun install
